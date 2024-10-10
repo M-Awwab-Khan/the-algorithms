@@ -1,7 +1,12 @@
 class Node<T> {
-    value: T
-    next: Node<T> | null
+    value: T;
+    next: Node<T> | null = null;
+
+    constructor(value: T) {
+        this.value = value;
+    }
 }
+
 
 export default class SinglyLinkedList<T> {
     public length: number;
@@ -16,8 +21,7 @@ export default class SinglyLinkedList<T> {
     }
 
     prepend(item: T): void {
-        let n = new Node<T>;
-        n.value = item;
+        let n = new Node<T>(item);
         n.next = this.head;
         this.head = n;
         this.length++;
@@ -38,8 +42,7 @@ export default class SinglyLinkedList<T> {
             for (let i = 0; i < idx - 1; ++i) {
                 current = current.next;
             }
-            let n = new Node<T>;
-            n.value = item;
+            let n = new Node<T>(item);
             n.next = current.next;
             current.next = n;
             this.length++;
@@ -47,61 +50,95 @@ export default class SinglyLinkedList<T> {
     }
 
     append(item: T): void {
-        if (this.tail) {
-            let n = new Node<T>;
-            n.value = item;
+        const n = new Node(item);
+
+        if (!this.tail) {
+            this.head = n;
+            this.tail = n;
+        } else {
             this.tail.next = n;
             this.tail = n;
-            this.length++;
-        } else {
-            this.prepend(item);
         }
+
+        this.length++;
     }
+
 
     remove(item: T): T | undefined {
-        if (this.head?.value === item) {
+        if (!this.head) return undefined;
+
+        if (this.head.value === item) {
+            const removedValue = this.head.value;
             this.head = this.head.next;
             this.length--;
-            return item;
-        } else {
-            let prev = null;
-            let current = this.head;
-            for (let i = 0; i < this.length; ++i) {
-                if (current.value == item) {
-                    break;
-                }
-                prev = current;
-                current = current?.next;
+
+            if (this.length === 0) {
+                this.tail = null;
             }
-            prev.next = current?.next;
-            current.next = null;
-            this.length--;
-            return current?.value;
+            return removedValue;
         }
 
+        let prev = this.head;
+        let current = this.head.next;
+
+        while (current) {
+            if (current.value === item) {
+                prev.next = current.next;
+                if (current === this.tail) {
+                    this.tail = prev;
+                }
+                this.length--;
+                return current.value;
+            }
+            prev = current;
+            current = current.next;
+        }
+
+        return undefined;
     }
+
     get(idx: number): T | undefined {
+        if (idx < 0 || idx >= this.length) {
+            return undefined;
+        }
+
         let current = this.head;
         for (let i = 0; i < idx; ++i) {
             current = current?.next;
         }
         return current?.value;
     }
+
     removeAt(idx: number): T | undefined {
+        if (idx < 0 || idx >= this.length) {
+            throw new Error("Index out of bounds");
+        }
+
         if (idx === 0) {
-            let temp = this.head?.value;
+            const value = this.head?.value;
             this.head = this.head?.next;
             this.length--;
-            return temp;
-        } else {
-            let prev: Node<T> | null = this.head;
-            for (let i = 0; i < idx - 1; ++i) {
-                prev = prev.next;
+
+            if (this.length === 0) {
+                this.tail = null;
             }
-            let temp = prev?.next?.value;
-            prev.next = prev?.next?.next;
-            this.length--;
-            return temp;
+            return value;
         }
+
+        let prev = this.head;
+        for (let i = 0; i < idx - 1; ++i) {
+            prev = prev?.next as Node<T>;
+        }
+
+        const removedValue = prev.next?.value;
+        prev.next = prev.next?.next;
+
+        if (prev.next === null) {
+            this.tail = prev;
+        }
+
+        this.length--;
+        return removedValue;
     }
+
 }
