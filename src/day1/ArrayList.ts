@@ -2,13 +2,10 @@ export default class ArrayList<T> {
     public length: number;
     private array: T[];
 
-
-
-    constructor() {
+    constructor(size: number = 0) {
+        this.array = new Array(size);
         this.length = 0;
-        this.array = [];
     }
-
     prepend(item: T): void {
         for (let i = this.length - 1; i >= 0; --i) {
             this.array[i + 1] = this.array[i];
@@ -33,6 +30,7 @@ export default class ArrayList<T> {
             for (let i = idx; i < this.length - 1; ++i) {
                 this.array[i] = this.array[i + 1];
             }
+            this.array[this.length - 1] = undefined as unknown as T;
             this.length--;
             return item;
         }
@@ -46,6 +44,16 @@ export default class ArrayList<T> {
         return undefined;
     }
     removeAt(idx: number): T | undefined {
+        if (idx >= 0 && idx < this.length) {
+            let element = this.array[idx];
+            for (let i = idx; i < this.length - 1; ++i) {
+                this.array[i] = this.array[i + 1];
+            }
+            this.array[this.length - 1] = undefined as unknown as T;
+            this.length--;
+            return element;
+        }
+        return undefined;
 
     }
     _search(item: T): number {
