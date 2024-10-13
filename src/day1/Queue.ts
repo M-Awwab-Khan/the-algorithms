@@ -5,8 +5,8 @@ type Node<T> = {
 
 export default class Queue<T> {
     public length: number;
-    public head: Node<T> | null
-    public tail: Node<T> | null
+    public head: Node<T> | null;
+    public tail: Node<T> | null;
 
     constructor() {
         this.head = this.tail = null;
@@ -32,7 +32,7 @@ export default class Queue<T> {
         }
 
         const headValue = this.head.value;
-        this.head = this.head.next;
+        this.head = this.head.next ?? null;
         this.length--;
 
         if (this.length === 0) {
@@ -43,7 +43,10 @@ export default class Queue<T> {
     }
 
     peek(): T | undefined {
+        return this.head?.value;
+    }
 
-        return this.head?.value
+    isEmpty(): boolean {
+        return this.length === 0;
     }
 }
