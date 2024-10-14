@@ -7,6 +7,16 @@ export default class MinHeap {
         this.data = [];
     }
 
+    buildHeap(array: number[]): void {
+        this.length = array.length;
+        this.data = array;
+
+        const startIdx = Math.floor(this.length / 2) - 1;
+        for (let i = startIdx; i >= 0; --i) {
+            this.heapifyDown(i);
+        }
+    }
+
     insert(value: number): void {
         this.data[this.length] = value;
         this.heapifyUp(this.length);
@@ -26,6 +36,19 @@ export default class MinHeap {
         this.data[0] = this.data[this.length];
         this.heapifyDown(0);
         return out;
+    }
+
+    peak(): number | undefined {
+        if (length === 0) return undefined;
+        return this.data[0];
+    }
+
+    size(): number {
+        return this.length;
+    }
+
+    isEmpty(): boolean {
+        return this.length === 0;
     }
 
     private heapifyUp(idx: number): void {
