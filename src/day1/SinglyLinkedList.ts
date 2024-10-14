@@ -7,12 +7,10 @@ class Node<T> {
     }
 }
 
-
 export default class SinglyLinkedList<T> {
     public length: number;
-    head: Node<T> | null
-    tail: Node<T> | null
-
+    head: Node<T> | null;
+    tail: Node<T> | null;
 
     constructor() {
         this.length = 0;
@@ -62,7 +60,6 @@ export default class SinglyLinkedList<T> {
 
         this.length++;
     }
-
 
     remove(item: T): T | undefined {
         if (!this.head) return undefined;
@@ -140,5 +137,4 @@ export default class SinglyLinkedList<T> {
         this.length--;
         return removedValue;
     }
-
 }
