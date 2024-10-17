@@ -1,25 +1,20 @@
-class Node<T> {
+type Node<T> = {
     value: T;
-    next: Node<T> | null = null;
-
-    constructor(value: T) {
-        this.value = value;
-    }
-}
+    next?: Node<T>;
+};
 
 export default class SinglyLinkedList<T> {
     public length: number;
-    head: Node<T> | null;
-    tail: Node<T> | null;
+    head?: Node<T>;
+    tail?: Node<T>;
 
     constructor() {
         this.length = 0;
-        this.head = null;
-        this.tail = null;
+        this.head = this.tail = undefined;
     }
 
     prepend(item: T): void {
-        let n = new Node<T>(item);
+        let n = { value: item } as Node<T>;
         n.next = this.head;
         this.head = n;
         this.length++;
@@ -36,19 +31,19 @@ export default class SinglyLinkedList<T> {
         } else if (idx < 0 || idx > this.length) {
             throw new Error("Index out of bounds");
         } else {
-            let current: Node<T> | null = this.head;
+            let current = this.head as Node<T>;
             for (let i = 0; i < idx - 1; ++i) {
-                current = current.next;
+                current = current.next as Node<T>;
             }
-            let n = new Node<T>(item);
-            n.next = current.next;
+            let n = { value: item } as Node<T>;
+            n.next = current?.next;
             current.next = n;
             this.length++;
         }
     }
 
     append(item: T): void {
-        const n = new Node(item);
+        const n = { value: item } as Node<T>;
 
         if (!this.tail) {
             this.head = n;
@@ -70,7 +65,7 @@ export default class SinglyLinkedList<T> {
             this.length--;
 
             if (this.length === 0) {
-                this.tail = null;
+                this.tail = undefined;
             }
             return removedValue;
         }
@@ -117,24 +112,39 @@ export default class SinglyLinkedList<T> {
             this.length--;
 
             if (this.length === 0) {
-                this.tail = null;
+                this.tail = undefined;
             }
             return value;
         }
 
-        let prev = this.head;
+        let prev = this.head as Node<T>;
         for (let i = 0; i < idx - 1; ++i) {
-            prev = prev?.next as Node<T>;
+            prev = prev.next as Node<T>;
         }
 
         const removedValue = prev.next?.value;
         prev.next = prev.next?.next;
 
-        if (prev.next === null) {
+        if (prev.next === undefined) {
             this.tail = prev;
         }
 
         this.length--;
         return removedValue;
+    }
+    reverse(): void {
+        let prev = undefined;
+        let current = this.head;
+        let next = undefined;
+
+        while (current) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        this.tail = this.head;
+        this.head = prev;
     }
 }
